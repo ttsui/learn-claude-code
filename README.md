@@ -50,9 +50,11 @@ pnpm start
 - `pnpm build` - Create optimized production build
 - `pnpm start` - Start production server
 - `pnpm lint` - Run ESLint
-- `pnpm test` - Run unit tests with Vitest _(Coming soon)_
-- `pnpm test:ui` - Run tests with Vitest UI _(Coming soon)_
-- `pnpm test:e2e` - Run E2E tests with Cucumber _(Coming soon)_
+- `pnpm test` - Run unit tests with Vitest
+- `pnpm test:ui` - Run tests with Vitest UI
+- `pnpm test:coverage` - Run tests with coverage report
+- `pnpm test:e2e` - Run E2E tests with Cucumber + Playwright
+- `pnpm test:e2e:parallel` - Run E2E tests in parallel (2 workers)
 
 ## Project Structure
 
@@ -91,12 +93,26 @@ pnpm test:coverage
 
 ### E2E Tests
 
-End-to-end tests use Cucumber.js with Playwright for BDD-style testing with Gherkin syntax.
+End-to-end tests use **Cucumber.js** with **Playwright** for BDD-style testing with Gherkin syntax. Tests are organized using the Page Object Model (POM) pattern.
+
+**Prerequisites**: Start the Next.js dev server before running E2E tests.
 
 ```bash
-# Run E2E tests (coming soon)
+# Start dev server in one terminal
+pnpm dev
+
+# Run E2E tests in another terminal
 pnpm test:e2e
+
+# Run E2E tests in parallel
+pnpm test:e2e:parallel
 ```
+
+**Directory structure**:
+- `features/*.feature` - Gherkin scenarios (business-readable test specs)
+- `features/page_objects/` - Page Object Model classes
+- `features/step_definitions/` - Step implementations using page objects
+- `features/support/` - Test configuration and hooks
 
 ## Development Workflow
 
