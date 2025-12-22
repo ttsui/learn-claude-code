@@ -40,5 +40,8 @@
     "ts-node": "^10.9.2",
     "typescript": "^5",
     "vitest": "^4.0.15"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,md}": "prettier --write"
   }
 }
