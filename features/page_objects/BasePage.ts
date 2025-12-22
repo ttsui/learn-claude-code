@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page } from "@playwright/test";
 
 export class BasePage {
   constructor(protected page: Page) {}
@@ -12,6 +12,6 @@ export class BasePage {
   }
 
   async waitForPageLoad() {
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState("networkidle");
   }
 }

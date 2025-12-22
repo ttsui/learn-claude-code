@@ -109,6 +109,7 @@ pnpm test:e2e:parallel
 ```
 
 **Directory structure**:
+
 - `features/*.feature` - Gherkin scenarios (business-readable test specs)
 - `features/page_objects/` - Page Object Model classes
 - `features/step_definitions/` - Step implementations using page objects

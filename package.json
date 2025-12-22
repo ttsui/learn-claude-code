@@ -11,7 +11,8 @@
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
     "test:e2e": "TS_NODE_PROJECT=tsconfig.cucumber.json cucumber-js --config cucumber.config.js",
-    "test:e2e:parallel": "TS_NODE_PROJECT=tsconfig.cucumber.json cucumber-js --config cucumber.config.js --parallel 2"
+    "test:e2e:parallel": "TS_NODE_PROJECT=tsconfig.cucumber.json cucumber-js --config cucumber.config.js --parallel 2",
+    "prepare": "husky"
   },
   "dependencies": {
     "next": "16.0.10",
@@ -31,10 +32,16 @@
     "@vitejs/plugin-react": "^5.1.2",
     "eslint": "^9",
     "eslint-config-next": "16.0.10",
+    "husky": "^9.1.7",
     "jsdom": "^27.3.0",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.7.4",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "typescript": "^5",
     "vitest": "^4.0.15"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,md}": "prettier --write"
   }
 }

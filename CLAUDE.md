@@ -127,15 +127,12 @@ A meaningful commit represents a **logical step forward**, even if the feature i
 #### Never Mix These in One Commit
 
 1. **Reformatting** and **functional changes**
-
    - If you re-indent code while fixing a bug, commit the reformatting first, then the bug fix
 
 2. **Refactoring** and **new features**
-
    - Refactor existing code in one commit, add new functionality in another
 
 3. **Code moves** and **code modifications**
-
    - When moving code between files, do a pure move first, then modify in a subsequent commit
 
 4. **Multiple unrelated bug fixes**

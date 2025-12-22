@@ -7,9 +7,11 @@ Create a production-ready TypeScript Next.js boilerplate with App Router, compre
 ## Key Architectural Decisions
 
 ### 1. Start with create-next-app
+
 **Rationale**: Standard Next.js initialization provides a solid foundation. After the initial scaffold, all subsequent changes follow atomic commit principles.
 
 ### 2. Project Structure
+
 ```
 /Users/tony.tsui/workspace/learning/learn-claude-code/
 ├── app/                    # Next.js App Router
@@ -36,6 +38,7 @@ Create a production-ready TypeScript Next.js boilerplate with App Router, compre
 ```
 
 ### 3. Testing Strategy (2-Tier)
+
 - **Unit/Integration Tests**: Vitest + React Testing Library (component logic, utilities, multi-component interactions)
 - **E2E Tests**: Cucumber JS + Playwright (BDD-style full user workflows with Gherkin syntax)
 
@@ -44,6 +47,7 @@ Create a production-ready TypeScript Next.js boilerplate with App Router, compre
 **Why Cucumber JS**: Behavior-driven development with Gherkin scenarios, business-readable test specs, clear separation of test steps and implementation.
 
 ### 4. TDD Workflow
+
 Every feature follows: **Pending Test → Implementation → Refactoring** (3 separate commits)
 
 ## Implementation Phases (6 Commits - Initial Setup)
@@ -92,6 +96,7 @@ Every feature follows: **Pending Test → Implementation → Refactoring** (3 se
 ### Phase 4: Cucumber JS + Playwright E2E Setup (Separate Plan)
 
 This will be implemented in a follow-up plan and will include:
+
 - Installing Playwright and Cucumber JS dependencies
 - Configuring Cucumber with Playwright integration
 - Creating feature file directory structure
@@ -104,6 +109,7 @@ This will be implemented in a follow-up plan and will include:
 ### Phase 5: CI/CD Setup (Separate Plan)
 
 This will be implemented in a follow-up plan and will include:
+
 - Creating `.github/workflows/build.yml` for build validation
 - Creating `.github/workflows/test.yml` for unit/integration tests
 - Creating `.github/workflows/e2e.yml` for E2E tests
@@ -123,18 +129,21 @@ This will be implemented in a follow-up plan and will include:
 ## Critical Files (Future Plans)
 
 **Phase 4 - E2E Testing:**
+
 - `cucumber.config.js` - Cucumber JS configuration
 - `features/home.feature` - Gherkin feature file for home page
 - `features/step_definitions/home.steps.ts` - Playwright-based step implementations
 
 **Phase 5 - CI/CD:**
+
 - `.github/workflows/build.yml` - Build workflow (runs in parallel)
 - `.github/workflows/test.yml` - Unit/integration test workflow (runs in parallel)
-- `.github/workflows/e2e.yml`** - E2E test workflow (runs in parallel)
+- `.github/workflows/e2e.yml`\*\* - E2E test workflow (runs in parallel)
 
 ## TDD Example Pattern
 
 For each feature:
+
 ```
 1. test(scope): add pending test for [feature]
    - Create test with .skip() or .todo()
@@ -178,6 +187,7 @@ Types: `feat`, `fix`, `test`, `refactor`, `docs`, `chore`, `ci`, `style`
 ## Next Steps After Completion
 
 The boilerplate will be ready for:
+
 - Feature development (auth, database, API routes)
 - Advanced testing (visual regression, a11y)
 - Production readiness (env vars, error boundaries, monitoring)
@@ -196,4 +206,4 @@ The boilerplate will be ready for:
 
 ---
 
-*This plan strictly follows the atomic commit philosophy from CLAUDE.md, ensuring every commit is a checkpoint where code builds and tests pass.*
+_This plan strictly follows the atomic commit philosophy from CLAUDE.md, ensuring every commit is a checkpoint where code builds and tests pass._
