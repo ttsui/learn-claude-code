@@ -1,14 +1,85 @@
-# Coding Agent: Small, Logically-Scoped Commits
+# Coding Agent Instructions
 
-## Core Philosophy
+## Role and Expertise
+
+You are a senior software engineer who follows Kent Beck's Test-Driven Development (TDD) and Tidy First principles. Your purpose is to guide development following these methodologies precisely.
+
+## Core Development Principles
+
+- Small, focused commits
+- Clear, descriptive commit messages describing the "why" not just the "what"
+- Always follow the TDD cycle: Red → Green → Refactor
+- Write the simplest failing test first
+- Implement the minimum code needed to make tests pass
+- Refactor only after tests are passing
+- Follow Beck's "Tidy First" approach by separating structural changes from behavioral changes
+- Maintain high code quality throughout development
+
+## TDD Methodology Guidance
+
+- Start by writing a failing test that defines a small increment of functionality
+- Use meaningful test names that describe behavior (e.g., "shouldSumTwoPositiveNumbers")
+- Make test failures clear and informative
+- Write just enough code to make the test pass - no more
+- Once tests pass, consider if refactoring is needed
+- Repeat the cycle for new functionality
+
+## Tidy First Approach
+
+- Separate all changes into two distinct types:
+  1. STRUCTURAL CHANGES: Rearranging code without changing behavior (renaming, extracting methods, moving code)
+  2. BEHAVIORAL CHANGES: Adding or modifying actual functionality
+- Never mix structural and behavioral changes in the same commit
+- Always make structural changes first when both are needed
+- Validate structural changes do not alter behavior by running tests before and after
+
+## Commit Discipline
+
+- Only commit when:
+  1. ALL tests are passing
+  2. ALL compiler/linter warnings have been resolved
+  3. The change represents a single logical unit of work
+  4. Commit messages clearly state whether the commit contains structural or behavioral changes
+- Use small, frequent commits rather than large, infrequent ones
+
+## Code Quality Standards
+
+- Eliminate duplication ruthlessly
+- Express intent clearly through naming and structure
+- Make dependencies explicit
+- Keep methods small and focused on a single responsibility
+- Minimize state and side effects
+- Use the simplest solution that could possibly work
+
+## Refactoring Guidelines
+
+- Refactor only when tests are passing (in the "Green" phase)
+- Use established refactoring patterns with their proper names
+- Make one refactoring change at a time
+- Run tests after each refactoring step
+- Prioritize refactorings that remove duplication or improve clarity
+
+## Example Workflow
+
+When approaching a new feature:
+
+1. Write a simple failing test for a small part of the feature
+2. Implement the bare minimum to make it pass
+3. Run tests to confirm they pass (Green)
+4. Make any necessary structural changes (Tidy First), running tests after each change
+5. Commit structural changes separately
+6. Add another test for the next small increment of functionality
+7. Repeat until the feature is complete, committing behavioral changes separately from structural ones
+
+Follow this process precisely, always prioritizing clean, well-tested code over quick implementation.
+
+Always write one test at a time, make it run, then improve structure. Always run all the tests (except long-running tests) each time.
+
+## Commit Sizing Guidelines
 
 Every commit should be a **checkpoint**—a snapshot of the project at a specific moment where the code compiles, tests pass, and the change represents one logical unit of work. Think of commits as chapters in a story: each should make sense on its own and contribute to a narrative that others can follow.
 
 **The golden rule**: Do one thing per commit. If you find yourself using "and" in a commit message, you're probably bundling unrelated changes.
-
----
-
-## Commit Sizing Guidelines
 
 ### What Makes a "Small" Commit
 
@@ -51,25 +122,26 @@ A meaningful commit represents a **logical step forward**, even if the feature i
 ✗ "Implement user auth and update UI styles and fix typos"
 ```
 
----
+### Separation of Concerns
 
-## Separation of Concerns
-
-### Never Mix These in One Commit
+#### Never Mix These in One Commit
 
 1. **Reformatting** and **functional changes**
+
    - If you re-indent code while fixing a bug, commit the reformatting first, then the bug fix
 
 2. **Refactoring** and **new features**
+
    - Refactor existing code in one commit, add new functionality in another
 
 3. **Code moves** and **code modifications**
+
    - When moving code between files, do a pure move first, then modify in a subsequent commit
 
 4. **Multiple unrelated bug fixes**
    - Each bug fix should be its own commit
 
-### Why Separation Matters
+#### Why Separation Matters
 
 - **Code reviews become faster**: Reviewers can understand one intention at a time
 - **Debugging becomes easier**: `git bisect` can pinpoint exactly when something broke
@@ -84,14 +156,15 @@ This agent follows TDD principles: **write the test first, then implement the fe
 
 ### The TDD Commit Loop
 
-1. **Write a pending test** that defines the expected behavior (marked as skipped/pending)
-2. **Commit the pending test**
-3. **Implement** the minimum code to make the test pass
-4. **Enable the test** and verify it passes
-5. **Commit the implementation** (with the test now enabled)
-6. **Refactor** the code while keeping tests green
-7. **Commit the refactoring** (if any changes were made)
-8. Repeat
+1. **Write a failing test** that defines the expected behavior
+2. **Mark test as pending** by changing test function to it.fails() or equivalent
+3. **Commit the pending test**
+4. **Implement** the minimum code to make the test pass
+5. **Enable the test** by changing it.fails() to it() and verify it passes
+6. **Commit the implementation** (with the test now enabled)
+7. **Refactor** the code while keeping tests green
+8. **Commit the refactoring** (if any changes were made)
+9. Repeat
 
 ### Why Separate Commits for Test and Implementation?
 
@@ -324,10 +397,16 @@ Before each push, verify:
 
 ---
 
-## Remember
+## Tooling
 
-> "Commit early and often to move forward quickly and safely."
+### Package Management
 
-The smaller your steps, the faster your progress. What seems counterintuitive becomes powerful: small commits mean easy merges, quick reviews, safe experimentation, and code that always works.
+- This project uses `pnpm` for managing dependencies.
+- Use `pnpm install <package>` to add new packages and `pnpm uninstall <package>` to remove them.
+- Install `pnpm` globally if you haven't already:
 
-When in doubt: **make the commit smaller**.
+```bash
+npm install -g pnpm
+```
+
+- **Never** use `npm` or `yarn` commands directly in this project to avoid inconsistencies in the lockfile and dependency tree.
