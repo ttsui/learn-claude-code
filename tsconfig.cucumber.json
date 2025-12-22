@@ -8,10 +8,6 @@
     "resolveJsonModule": true,
     "types": ["node", "@cucumber/cucumber", "@playwright/test"]
   },
-  "include": [
-    "features/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["features/**/*.ts"],
+  "exclude": ["node_modules"]
 }

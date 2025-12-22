@@ -7,12 +7,14 @@ Add end-to-end testing to the TypeScript Next.js starter using Cucumber JS for B
 ## Context
 
 **Completed in Phase 1-3:**
+
 - Next.js 16 with TypeScript, Tailwind CSS, App Router
 - Vitest + React Testing Library for unit/integration tests
 - Simple home page with welcome heading and project description
 - 6 atomic commits following CLAUDE.md principles
 
 **Current State:**
+
 - Home page at `app/page.tsx` displays:
   - H1: "Welcome to Next.js"
   - Paragraph: "A TypeScript Next.js starter with Vitest and Tailwind CSS"
@@ -24,6 +26,7 @@ Add end-to-end testing to the TypeScript Next.js starter using Cucumber JS for B
 ### 1. Cucumber JS + Playwright Integration
 
 **Rationale**:
+
 - **Cucumber JS**: Business-readable Gherkin scenarios make tests accessible to non-developers
 - **Playwright**: Modern, reliable browser automation with built-in waiting and cross-browser support
 - **Integration**: Use `@cucumber/cucumber` with custom Playwright world/context
@@ -47,6 +50,7 @@ features/
 ### 3. Page Object Model (POM) Pattern
 
 **Rationale**:
+
 - **Encapsulation**: Page-specific selectors and actions are encapsulated in page classes
 - **Maintainability**: Changes to UI only require updates to page objects, not step definitions
 - **Reusability**: Page methods can be reused across multiple step definitions
@@ -62,6 +66,7 @@ features/
 ### 5. BDD Testing Pattern with POM
 
 Every E2E scenario follows:
+
 1. **Feature file** (`.feature`) with Gherkin scenarios
 2. **Page objects** (`.ts`) encapsulating page structure and interactions
 3. **Step definitions** (`.steps.ts`) using page objects to implement Gherkin steps
@@ -113,6 +118,7 @@ Every E2E scenario follows:
 ### Commit 1: Playwright Dependencies
 
 **Install Playwright:**
+
 ```bash
 pnpm add -D @playwright/test
 pnpm exec playwright install chromium
@@ -125,11 +131,13 @@ pnpm exec playwright install chromium
 ### Commit 2: Cucumber Dependencies
 
 **Install Cucumber:**
+
 ```bash
 pnpm add -D @cucumber/cucumber @cucumber/pretty-formatter ts-node
 ```
 
 **Dependencies:**
+
 - `@cucumber/cucumber`: Core Cucumber framework
 - `@cucumber/pretty-formatter`: Readable test output
 - `ts-node`: Run TypeScript step definitions directly
@@ -139,26 +147,28 @@ pnpm add -D @cucumber/cucumber @cucumber/pretty-formatter ts-node
 ### Commit 3: Cucumber Configuration
 
 **File: `cucumber.config.js`**
+
 ```javascript
 export default {
-  require: ['features/**/*.ts'],
-  requireModule: ['ts-node/register'],
+  require: ["features/**/*.ts"],
+  requireModule: ["ts-node/register"],
   format: [
-    'progress-bar',
-    '@cucumber/pretty-formatter',
-    'html:cucumber-report.html'
+    "progress-bar",
+    "@cucumber/pretty-formatter",
+    "html:cucumber-report.html",
   ],
   formatOptions: {
-    snippetInterface: 'async-await'
+    snippetInterface: "async-await",
   },
-  publishQuiet: true
+  publishQuiet: true,
 };
 ```
 
 **File: `features/support/world.ts`**
+
 ```typescript
-import { World, IWorldOptions, setWorldConstructor } from '@cucumber/cucumber';
-import { Browser, BrowserContext, Page, chromium } from '@playwright/test';
+import { World, IWorldOptions, setWorldConstructor } from "@cucumber/cucumber";
+import { Browser, BrowserContext, Page, chromium } from "@playwright/test";
 
 export class CustomWorld extends World {
   browser?: Browser;
@@ -186,9 +196,10 @@ setWorldConstructor(CustomWorld);
 ```
 
 **File: `features/support/hooks.ts`**
+
 ```typescript
-import { Before, After } from '@cucumber/cucumber';
-import { CustomWorld } from './world';
+import { Before, After } from "@cucumber/cucumber";
+import { CustomWorld } from "./world";
 
 Before(async function (this: CustomWorld) {
   await this.init();
@@ -200,8 +211,9 @@ After(async function (this: CustomWorld) {
 ```
 
 **File: `features/page_objects/BasePage.ts`**
+
 ```typescript
-import { Page } from '@playwright/test';
+import { Page } from "@playwright/test";
 
 export class BasePage {
   constructor(protected page: Page) {}
@@ -215,12 +227,13 @@ export class BasePage {
   }
 
   async waitForPageLoad() {
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState("networkidle");
   }
 }
 ```
 
 **Directory structure created:**
+
 - `features/`
 - `features/step_definitions/`
 - `features/support/`
@@ -231,6 +244,7 @@ export class BasePage {
 ### Commit 4: E2E Scripts
 
 **Update `package.json`:**
+
 ```json
 {
   "scripts": {
@@ -248,6 +262,7 @@ Add E2E testing section with usage instructions.
 ### Commit 5: Pending Feature
 
 **File: `features/home.feature`**
+
 ```gherkin
 @skip
 Feature: Home Page
@@ -268,25 +283,26 @@ Feature: Home Page
 ### Commit 6: Implement Page Objects and Step Definitions
 
 **File: `features/page_objects/HomePage.ts`**
+
 ```typescript
-import { Page, expect } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { Page, expect } from "@playwright/test";
+import { BasePage } from "./BasePage";
 
 export class HomePage extends BasePage {
-  private readonly heading = this.page.locator('h1');
-  private readonly description = this.page.locator('p');
+  private readonly heading = this.page.locator("h1");
+  private readonly description = this.page.locator("p");
 
   constructor(page: Page) {
     super(page);
   }
 
   async navigate() {
-    await this.goto('http://localhost:3000');
+    await this.goto("http://localhost:3000");
     await this.waitForPageLoad();
   }
 
   async getHeadingText(): Promise<string> {
-    return await this.heading.textContent() || '';
+    return (await this.heading.textContent()) || "";
   }
 
   async verifyHeading(expectedText: string) {
@@ -300,37 +316,46 @@ export class HomePage extends BasePage {
 ```
 
 **File: `features/step_definitions/common.steps.ts`**
-```typescript
-import { Given } from '@cucumber/cucumber';
-import { CustomWorld } from '../support/world';
-import { HomePage } from '../page_objects/HomePage';
 
-Given('I am on the home page', async function (this: CustomWorld) {
+```typescript
+import { Given } from "@cucumber/cucumber";
+import { CustomWorld } from "../support/world";
+import { HomePage } from "../page_objects/HomePage";
+
+Given("I am on the home page", async function (this: CustomWorld) {
   const homePage = new HomePage(this.page!);
   await homePage.navigate();
 });
 ```
 
 **File: `features/step_definitions/home.steps.ts`**
+
 ```typescript
-import { Then } from '@cucumber/cucumber';
-import { CustomWorld } from '../support/world';
-import { HomePage } from '../page_objects/HomePage';
+import { Then } from "@cucumber/cucumber";
+import { CustomWorld } from "../support/world";
+import { HomePage } from "../page_objects/HomePage";
 
-Then('I should see the heading {string}', async function (this: CustomWorld, text: string) {
-  const homePage = new HomePage(this.page!);
-  await homePage.verifyHeading(text);
-});
+Then(
+  "I should see the heading {string}",
+  async function (this: CustomWorld, text: string) {
+    const homePage = new HomePage(this.page!);
+    await homePage.verifyHeading(text);
+  },
+);
 
-Then('I should see the text {string}', async function (this: CustomWorld, text: string) {
-  const homePage = new HomePage(this.page!);
-  await homePage.verifyTextVisible(text);
-});
+Then(
+  "I should see the text {string}",
+  async function (this: CustomWorld, text: string) {
+    const homePage = new HomePage(this.page!);
+    await homePage.verifyTextVisible(text);
+  },
+);
 ```
 
 **Update `features/home.feature`:** Remove `@skip` tag
 
 **Verification**:
+
 ```bash
 pnpm dev & # Start Next.js dev server
 pnpm test:e2e # Run E2E tests - should pass
@@ -375,23 +400,27 @@ Types: `test`, `chore`, `docs`
 ### BDD with Page Object Model
 
 **Feature files** (`.feature`):
+
 - Written in business language
 - Describe user behaviors, not implementation
 - Use Given/When/Then structure
 
 **Page objects** (`.ts`):
+
 - Encapsulate page structure (selectors)
 - Provide high-level methods for page interactions
 - Inherit from BasePage for common functionality
 - One page object per page/component
 
 **Step definitions** (`.steps.ts`):
+
 - Use page objects to interact with the application
 - Keep step definitions thin - delegate to page objects
 - Focus on test flow, not implementation details
 - Reuse page objects across multiple steps
 
 **Example Architecture**:
+
 ```typescript
 // Page Object - encapsulates "how"
 class HomePage {
@@ -426,10 +455,12 @@ Scenario: User sees welcome message
 ### New Dependencies (Commit-by-Commit)
 
 **Commit 1:**
+
 - `@playwright/test` - Playwright testing library
 - Chromium browser binaries
 
 **Commit 2:**
+
 - `@cucumber/cucumber` - Cucumber core
 - `@cucumber/pretty-formatter` - Better test output
 - `ts-node` - TypeScript execution
@@ -439,11 +470,13 @@ Scenario: User sees welcome message
 ## Next Steps After Completion
 
 After Phase 4, the project will have:
+
 - Full E2E testing with Cucumber + Playwright
 - BDD workflow for writing user scenarios
 - Foundation for adding more complex E2E tests
 
 Ready for **Phase 5: CI/CD Setup** which will:
+
 - Add GitHub Actions workflows for parallel testing
 - Separate workflows for build, unit tests, and E2E tests
 - Run E2E tests in CI with Playwright browsers
@@ -460,4 +493,4 @@ Ready for **Phase 5: CI/CD Setup** which will:
 
 ---
 
-*This plan strictly follows the atomic commit philosophy from CLAUDE.md, ensuring every commit is a checkpoint where code builds and tests pass.*
+_This plan strictly follows the atomic commit philosophy from CLAUDE.md, ensuring every commit is a checkpoint where code builds and tests pass._
