@@ -1,6 +1,11 @@
 export default {
-  require: ['features/**/*.ts'],
   requireModule: ['ts-node/register'],
+  require: [
+    'features/support/world.ts',
+    'features/support/hooks.ts',
+    'features/step_definitions/common.steps.ts',
+    'features/step_definitions/home.steps.ts'
+  ],
   format: [
     'progress-bar',
     '@cucumber/pretty-formatter',

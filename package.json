@@ -10,8 +10,8 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "test:e2e": "cucumber-js",
-    "test:e2e:parallel": "cucumber-js --parallel 2"
+    "test:e2e": "TS_NODE_PROJECT=tsconfig.cucumber.json cucumber-js --config cucumber.config.js",
+    "test:e2e:parallel": "TS_NODE_PROJECT=tsconfig.cucumber.json cucumber-js --config cucumber.config.js --parallel 2"
   },
   "dependencies": {
     "next": "16.0.10",
