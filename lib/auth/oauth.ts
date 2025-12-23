@@ -123,6 +123,7 @@ function generateRandomString(length: number): string {
     crypto.getRandomValues(randomValues);
   } else {
     // Fallback for Node.js environment
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const nodeCrypto = require("crypto");
     nodeCrypto.randomFillSync(randomValues);
   }
@@ -146,6 +147,7 @@ async function generateCodeChallenge(verifier: string): Promise<string> {
     digest = await crypto.subtle.digest("SHA-256", data);
   } else {
     // Node.js environment
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const nodeCrypto = require("crypto");
     const hash = nodeCrypto.createHash("sha256");
     hash.update(verifier);
