@@ -2,6 +2,8 @@
  * Google Photos Picker API client
  */
 
+const PICKER_API_BASE_URL = "https://photospicker.googleapis.com/v1";
+
 export interface PickerSession {
   id: string;
   pickerUri: string;
@@ -26,6 +28,24 @@ export interface SessionStatus {
   };
 }
 
+interface CreateSessionResponse {
+  id: string;
+  pickerUri: string;
+  pollingConfig?: {
+    pollInterval?: string;
+  };
+}
+
+interface GetSessionResponse {
+  id: string;
+  pickerUri: string;
+  mediaItemsSet: boolean;
+  mediaItems?: MediaItem[];
+  pollingConfig?: {
+    pollInterval?: string;
+  };
+}
+
 /**
  * Create a new Google Photos Picker session
  * @param accessToken - Valid OAuth 2.0 access token
@@ -34,7 +54,27 @@ export interface SessionStatus {
 export async function createPickerSession(
   accessToken: string,
 ): Promise<PickerSession> {
-  throw new Error("Not implemented");
+  const response = await fetch(`${PICKER_API_BASE_URL}/sessions`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({}),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.text();
+    throw new Error(
+      `Failed to create picker session: ${response.status} ${response.statusText} - ${errorData}`,
+    );
+  }
+
+  const data: CreateSessionResponse = await response.json();
+  return {
+    id: data.id,
+    pickerUri: data.pickerUri,
+  };
 }
 
 /**
@@ -47,5 +87,24 @@ export async function getSessionStatus(
   accessToken: string,
   sessionId: string,
 ): Promise<SessionStatus> {
-  throw new Error("Not implemented");
+  const response = await fetch(`${PICKER_API_BASE_URL}/sessions/${sessionId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorData = await response.text();
+    throw new Error(
+      `Failed to get session status: ${response.status} ${response.statusText} - ${errorData}`,
+    );
+  }
+
+  const data: GetSessionResponse = await response.json();
+  return {
+    mediaItemsSet: data.mediaItemsSet,
+    mediaItems: data.mediaItems,
+    pollingConfig: data.pollingConfig,
+  };
 }
