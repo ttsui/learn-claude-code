@@ -45,6 +45,13 @@ jobs:
       - name: Run unit and integration tests
         run: pnpm test:coverage
 
+      - name: Publish test results to PR
+        uses: ctrf-io/github-test-reporter@v1
+        if: always()
+        with:
+          report-path: ctrf-report.json
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         if: always()
