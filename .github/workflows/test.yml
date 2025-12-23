@@ -49,7 +49,7 @@ jobs:
         uses: ctrf-io/github-test-reporter@v1
         if: always()
         with:
-          report-path: ctrf-report.json
+          report-path: ctrf/ctrf-report.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload coverage reports to Codecov

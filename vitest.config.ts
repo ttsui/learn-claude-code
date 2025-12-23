@@ -8,10 +8,7 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: "./vitest.setup.ts",
-    reporters: [
-      "default",
-      ["vitest-ctrf-json-reporter", { outputFile: "ctrf-report.json" }],
-    ],
+    reporters: ["default", ["vitest-ctrf-json-reporter", {}]],
   },
   resolve: {
     alias: {
