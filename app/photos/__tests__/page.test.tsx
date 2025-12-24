@@ -1,8 +1,25 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import PhotosPage from "../page";
 
+// Mock next/navigation
+vi.mock("next/navigation", () => ({
+  useSearchParams: vi.fn(),
+}));
+
+import { useSearchParams } from "next/navigation";
+
 describe("Photos Page", () => {
+  beforeEach(() => {
+    vi.mocked(useSearchParams).mockReturnValue({
+      get: vi.fn((key: string) => {
+        if (key === "pickerUri") return "https://photos.google.com/picker/123";
+        if (key === "sessionId") return "session-123";
+        return null;
+      }),
+    } as unknown as ReturnType<typeof useSearchParams>);
+  });
+
   it("should render the page title", () => {
     render(<PhotosPage />);
     const heading = screen.getByRole("heading", { level: 1 });
@@ -19,5 +36,17 @@ describe("Photos Page", () => {
     render(<PhotosPage />);
     const link = screen.getByRole("link", { name: /back to home/i });
     expect(link).toHaveAttribute("href", "/");
+  });
+
+  it("should have a link to open the picker in a new tab", () => {
+    render(<PhotosPage />);
+    const link = screen.getByRole("link", {
+      name: /open google photos picker/i,
+    });
+    expect(link).toHaveAttribute(
+      "href",
+      "https://photos.google.com/picker/123",
+    );
+    expect(link).toHaveAttribute("target", "_blank");
   });
 });
