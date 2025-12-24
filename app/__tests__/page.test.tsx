@@ -16,4 +16,13 @@ describe("Home Page", () => {
     );
     expect(description).toBeInTheDocument();
   });
+
+  it("should render a Connect to Google Photos button", () => {
+    render(<Home />);
+    const button = screen.getByRole("link", {
+      name: /connect to google photos/i,
+    });
+    expect(button).toBeInTheDocument();
+    expect(button).toHaveAttribute("href", "/api/auth/google");
+  });
 });

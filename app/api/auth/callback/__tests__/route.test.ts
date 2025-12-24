@@ -41,7 +41,7 @@ describe("GET /api/auth/callback", () => {
     return new NextRequest(url);
   }
 
-  it("should exchange code for tokens and create picker session", async () => {
+  it("should exchange code for tokens and redirect to photos page", async () => {
     const mockTokens = {
       access_token: "test-access-token",
       refresh_token: "test-refresh-token",
@@ -74,7 +74,18 @@ describe("GET /api/auth/callback", () => {
       redirectUri: "http://localhost:3000/api/auth/callback",
     });
     expect(createPickerSession).toHaveBeenCalledWith("test-access-token");
-    expect(response.headers.get("Location")).toBe(mockSession.pickerUri);
+
+    // Should redirect to photos page with session info
+    const location = response.headers.get("Location");
+    expect(location).toContain("http://localhost:3000/photos");
+    expect(location).toContain("sessionId=session-123");
+    expect(location).toContain(
+      `pickerUri=${encodeURIComponent(mockSession.pickerUri)}`,
+    );
+
+    // Should set access token cookie
+    const cookies = response.cookies.get("google_access_token");
+    expect(cookies?.value).toBe("test-access-token");
   });
 
   it("should return error when code is missing", async () => {

@@ -52,8 +52,23 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     // Create a picker session
     const session = await createPickerSession(tokens.access_token);
 
-    // Redirect to the picker UI
-    return NextResponse.redirect(session.pickerUri, { status: 302 });
+    // Redirect to photos page with session info
+    const photosUrl = new URL(`${baseUrl}/photos`);
+    photosUrl.searchParams.set("sessionId", session.id);
+    photosUrl.searchParams.set("pickerUri", session.pickerUri);
+
+    // Store access token in a secure HTTP-only cookie
+    const response = NextResponse.redirect(photosUrl.toString(), {
+      status: 302,
+    });
+    response.cookies.set("google_access_token", tokens.access_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: tokens.expires_in,
+    });
+
+    return response;
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json({ error: message }, { status: 500 });
