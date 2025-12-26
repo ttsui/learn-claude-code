@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import {
   getAuthorizationUrl,
   exchangeCodeForToken,
@@ -6,7 +6,8 @@ import {
 } from "../../auth/oauth";
 
 // Mock global fetch
-global.fetch = vi.fn();
+const mockFetch = vi.fn() as Mock;
+global.fetch = mockFetch;
 
 describe("OAuth 2.0 Token Acquisition", () => {
   beforeEach(() => {
@@ -48,7 +49,7 @@ describe("OAuth 2.0 Token Acquisition", () => {
       refresh_token: "mock-refresh-token",
     };
 
-    (global.fetch as any).mockResolvedValueOnce({
+    mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockTokenResponse,
     });
@@ -94,7 +95,7 @@ describe("OAuth 2.0 Token Acquisition", () => {
       expires_in: 3600,
     };
 
-    (global.fetch as any).mockResolvedValueOnce({
+    mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockTokenResponse,
     });
