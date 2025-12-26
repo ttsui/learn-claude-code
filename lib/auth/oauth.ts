@@ -34,8 +34,20 @@ export interface TokenResponse {
  * Generate OAuth 2.0 authorization URL for Google Photos Picker API
  */
 export function getAuthorizationUrl(params: AuthorizationUrlParams): string {
-  // TODO: Implementation pending
-  throw new Error("Not implemented");
+  const { clientId, redirectUri, scope, state } = params;
+
+  const url = new URL("https://accounts.google.com/o/oauth2/v2/auth");
+  url.searchParams.set("client_id", clientId);
+  url.searchParams.set("redirect_uri", redirectUri);
+  url.searchParams.set("response_type", "code");
+  url.searchParams.set("scope", scope);
+  url.searchParams.set("access_type", "offline");
+
+  if (state) {
+    url.searchParams.set("state", state);
+  }
+
+  return url.toString();
 }
 
 /**
@@ -44,8 +56,28 @@ export function getAuthorizationUrl(params: AuthorizationUrlParams): string {
 export async function exchangeCodeForToken(
   params: TokenExchangeParams,
 ): Promise<TokenResponse> {
-  // TODO: Implementation pending
-  throw new Error("Not implemented");
+  const { code, clientId, clientSecret, redirectUri } = params;
+
+  const response = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      code,
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uri: redirectUri,
+      grant_type: "authorization_code",
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Token exchange failed: ${error}`);
+  }
+
+  return (await response.json()) as TokenResponse;
 }
 
 /**
@@ -54,6 +86,25 @@ export async function exchangeCodeForToken(
 export async function refreshAccessToken(
   params: TokenRefreshParams,
 ): Promise<TokenResponse> {
-  // TODO: Implementation pending
-  throw new Error("Not implemented");
+  const { refreshToken, clientId, clientSecret } = params;
+
+  const response = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      refresh_token: refreshToken,
+      client_id: clientId,
+      client_secret: clientSecret,
+      grant_type: "refresh_token",
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Token refresh failed: ${error}`);
+  }
+
+  return (await response.json()) as TokenResponse;
 }

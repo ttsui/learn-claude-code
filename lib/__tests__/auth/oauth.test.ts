@@ -1,8 +1,19 @@
-import { describe, it, expect } from "vitest";
-import { getAuthorizationUrl, exchangeCodeForToken } from "../../auth/oauth";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import {
+  getAuthorizationUrl,
+  exchangeCodeForToken,
+  refreshAccessToken,
+} from "../../auth/oauth";
+
+// Mock global fetch
+global.fetch = vi.fn();
 
 describe("OAuth 2.0 Token Acquisition", () => {
-  it.fails("should generate authorization URL with correct parameters", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("should generate authorization URL with correct parameters", () => {
     const clientId = "test-client-id";
     const redirectUri = "http://localhost:3000/auth/callback";
     const scope =
@@ -24,11 +35,23 @@ describe("OAuth 2.0 Token Acquisition", () => {
     expect(authUrl).toContain("access_type=offline");
   });
 
-  it.fails("should exchange authorization code for access token", async () => {
+  it("should exchange authorization code for access token", async () => {
     const code = "test-auth-code";
     const clientId = "test-client-id";
     const clientSecret = "test-client-secret";
     const redirectUri = "http://localhost:3000/auth/callback";
+
+    const mockTokenResponse = {
+      access_token: "mock-access-token",
+      token_type: "Bearer",
+      expires_in: 3600,
+      refresh_token: "mock-refresh-token",
+    };
+
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockTokenResponse,
+    });
 
     const tokenResponse = await exchangeCodeForToken({
       code,
@@ -43,7 +66,7 @@ describe("OAuth 2.0 Token Acquisition", () => {
     expect(tokenResponse).toHaveProperty("expires_in");
   });
 
-  it.fails("should include state parameter for CSRF protection", () => {
+  it("should include state parameter for CSRF protection", () => {
     const clientId = "test-client-id";
     const redirectUri = "http://localhost:3000/auth/callback";
     const scope =
@@ -60,22 +83,29 @@ describe("OAuth 2.0 Token Acquisition", () => {
     expect(authUrl).toContain(`state=${state}`);
   });
 
-  it.fails(
-    "should handle token refresh when access token expires",
-    async () => {
-      const refreshToken = "test-refresh-token";
-      const clientId = "test-client-id";
-      const clientSecret = "test-client-secret";
+  it("should handle token refresh when access token expires", async () => {
+    const refreshToken = "test-refresh-token";
+    const clientId = "test-client-id";
+    const clientSecret = "test-client-secret";
 
-      const { refreshAccessToken } = await import("../../auth/oauth");
-      const tokenResponse = await refreshAccessToken({
-        refreshToken,
-        clientId,
-        clientSecret,
-      });
+    const mockTokenResponse = {
+      access_token: "new-access-token",
+      token_type: "Bearer",
+      expires_in: 3600,
+    };
 
-      expect(tokenResponse).toHaveProperty("access_token");
-      expect(tokenResponse).toHaveProperty("expires_in");
-    },
-  );
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockTokenResponse,
+    });
+
+    const tokenResponse = await refreshAccessToken({
+      refreshToken,
+      clientId,
+      clientSecret,
+    });
+
+    expect(tokenResponse).toHaveProperty("access_token");
+    expect(tokenResponse).toHaveProperty("expires_in");
+  });
 });
