@@ -35,8 +35,26 @@ export interface MediaItemsResponse {
 export async function createPickerSession(
   params: PickerSessionParams,
 ): Promise<PickerSession> {
-  // TODO: Implementation pending
-  throw new Error("Not implemented");
+  const { accessToken } = params;
+
+  const response = await fetch(
+    "https://photospicker.googleapis.com/v1/sessions",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({}),
+    },
+  );
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Failed to create picker session: ${error}`);
+  }
+
+  return (await response.json()) as PickerSession;
 }
 
 /**
@@ -45,6 +63,22 @@ export async function createPickerSession(
 export async function getMediaItems(
   params: MediaItemsParams,
 ): Promise<MediaItemsResponse> {
-  // TODO: Implementation pending
-  throw new Error("Not implemented");
+  const { accessToken, sessionId } = params;
+
+  const response = await fetch(
+    `https://photospicker.googleapis.com/v1/sessions/${sessionId}/mediaItems`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Failed to get media items: ${error}`);
+  }
+
+  return (await response.json()) as MediaItemsResponse;
 }

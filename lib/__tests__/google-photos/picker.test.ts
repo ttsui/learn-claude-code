@@ -9,7 +9,7 @@ describe("Google Photos Picker API", () => {
     vi.clearAllMocks();
   });
 
-  it.fails("should create a picker session with access token", async () => {
+  it("should create a picker session with access token", async () => {
     const accessToken = "test-access-token";
 
     const mockSessionResponse = {
@@ -32,47 +32,44 @@ describe("Google Photos Picker API", () => {
     expect(session).toHaveProperty("mediaItemsSet");
   });
 
-  it.fails(
-    "should retrieve selected media items from picker session",
-    async () => {
-      const accessToken = "test-access-token";
-      const sessionId = "test-session-id";
+  it("should retrieve selected media items from picker session", async () => {
+    const accessToken = "test-access-token";
+    const sessionId = "test-session-id";
 
-      const mockMediaItems = {
-        mediaItems: [
-          {
-            id: "photo1",
-            mimeType: "image/jpeg",
-            filename: "IMG_001.jpg",
-            baseUrl: "https://lh3.googleusercontent.com/...",
-          },
-          {
-            id: "photo2",
-            mimeType: "image/png",
-            filename: "IMG_002.png",
-            baseUrl: "https://lh3.googleusercontent.com/...",
-          },
-        ],
-      };
+    const mockMediaItems = {
+      mediaItems: [
+        {
+          id: "photo1",
+          mimeType: "image/jpeg",
+          filename: "IMG_001.jpg",
+          baseUrl: "https://lh3.googleusercontent.com/...",
+        },
+        {
+          id: "photo2",
+          mimeType: "image/png",
+          filename: "IMG_002.png",
+          baseUrl: "https://lh3.googleusercontent.com/...",
+        },
+      ],
+    };
 
-      (global.fetch as any).mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockMediaItems,
-      });
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockMediaItems,
+    });
 
-      const mediaItems = await getMediaItems({
-        accessToken,
-        sessionId,
-      });
+    const mediaItems = await getMediaItems({
+      accessToken,
+      sessionId,
+    });
 
-      expect(mediaItems).toHaveProperty("mediaItems");
-      expect(mediaItems.mediaItems).toHaveLength(2);
-      expect(mediaItems.mediaItems[0]).toHaveProperty("id");
-      expect(mediaItems.mediaItems[0]).toHaveProperty("baseUrl");
-    },
-  );
+    expect(mediaItems).toHaveProperty("mediaItems");
+    expect(mediaItems.mediaItems).toHaveLength(2);
+    expect(mediaItems.mediaItems[0]).toHaveProperty("id");
+    expect(mediaItems.mediaItems[0]).toHaveProperty("baseUrl");
+  });
 
-  it.fails("should handle picker session creation errors", async () => {
+  it("should handle picker session creation errors", async () => {
     const accessToken = "invalid-token";
 
     (global.fetch as any).mockResolvedValueOnce({
@@ -86,7 +83,7 @@ describe("Google Photos Picker API", () => {
     );
   });
 
-  it.fails("should handle errors when retrieving media items", async () => {
+  it("should handle errors when retrieving media items", async () => {
     const accessToken = "test-access-token";
     const sessionId = "invalid-session";
 
