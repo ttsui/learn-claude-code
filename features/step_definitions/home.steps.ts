@@ -17,3 +17,11 @@ Then(
     await homePage.verifyTextVisible(text);
   },
 );
+
+Then(
+  "I should see a button {string}",
+  async function (this: CustomWorld, text: string) {
+    const homePage = new HomePage(this.page!);
+    await homePage.verifyButtonVisible(text);
+  },
+);
