@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getAuthorizationUrl } from "../../lib/auth/oauth";
 import { createPickerSession } from "../../lib/google-photos/picker";
 
@@ -9,11 +9,29 @@ export default function GooglePhotosPickerDemo() {
   const [pickerUri, setPickerUri] = useState<string>("");
   const [error, setError] = useState<string>("");
 
+  // Extract access token from URL fragment after OAuth redirect
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    const token = params.get("access_token");
+
+    if (token) {
+      // Use setTimeout to defer state update and avoid cascading renders
+      setTimeout(() => {
+        setAccessToken(token);
+      }, 0);
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   const handleStartOAuth = () => {
     // These would come from environment variables in a real app
     const clientId =
       process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "your-client-id";
-    const redirectUri = `${window.location.origin}/auth/callback`;
+    const redirectUri = `${window.location.origin}/api/auth/callback`;
     const scope =
       "https://www.googleapis.com/auth/photospicker.mediaitems.readonly";
 
@@ -144,11 +162,25 @@ export default function GooglePhotosPickerDemo() {
             to Authorized JavaScript origins
           </li>
           <li>
-            Set{" "}
+            Add{" "}
             <code className="rounded bg-gray-100 px-1 dark:bg-gray-900">
-              NEXT_PUBLIC_GOOGLE_CLIENT_ID
+              {typeof window !== "undefined"
+                ? `${window.location.origin}/api/auth/callback`
+                : ""}
             </code>{" "}
-            in .env.local
+            to Authorized redirect URIs
+          </li>
+          <li>
+            Create{" "}
+            <code className="rounded bg-gray-100 px-1 dark:bg-gray-900">
+              .env.local
+            </code>{" "}
+            file with:
+            <div className="mt-1 rounded bg-gray-50 p-2 font-mono text-xs dark:bg-gray-900">
+              NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_client_id
+              <br />
+              GOOGLE_CLIENT_SECRET=your_client_secret
+            </div>
           </li>
         </ol>
       </div>
