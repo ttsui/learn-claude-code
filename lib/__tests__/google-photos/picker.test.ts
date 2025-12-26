@@ -1,8 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { createPickerSession, getMediaItems } from "../../google-photos/picker";
 
 // Mock global fetch
-global.fetch = vi.fn();
+const mockFetch = vi.fn() as Mock;
+global.fetch = mockFetch;
 
 describe("Google Photos Picker API", () => {
   beforeEach(() => {
@@ -18,7 +19,7 @@ describe("Google Photos Picker API", () => {
       mediaItemsSet: false,
     };
 
-    (global.fetch as any).mockResolvedValueOnce({
+    mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockSessionResponse,
     });
@@ -53,7 +54,7 @@ describe("Google Photos Picker API", () => {
       ],
     };
 
-    (global.fetch as any).mockResolvedValueOnce({
+    mockFetch.mockResolvedValueOnce({
       ok: true,
       json: async () => mockMediaItems,
     });
@@ -72,7 +73,7 @@ describe("Google Photos Picker API", () => {
   it("should handle picker session creation errors", async () => {
     const accessToken = "invalid-token";
 
-    (global.fetch as any).mockResolvedValueOnce({
+    mockFetch.mockResolvedValueOnce({
       ok: false,
       status: 401,
       text: async () => "Unauthorized",
@@ -87,7 +88,7 @@ describe("Google Photos Picker API", () => {
     const accessToken = "test-access-token";
     const sessionId = "invalid-session";
 
-    (global.fetch as any).mockResolvedValueOnce({
+    mockFetch.mockResolvedValueOnce({
       ok: false,
       status: 404,
       text: async () => "Session not found",
