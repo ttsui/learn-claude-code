@@ -25,4 +25,8 @@ export class HomePage extends BasePage {
   async verifyTextVisible(text: string) {
     await expect(this.page.locator(`text=${text}`)).toBeVisible();
   }
+
+  async verifyButtonVisible(text: string) {
+    await expect(this.page.getByRole("button", { name: text })).toBeVisible();
+  }
 }
