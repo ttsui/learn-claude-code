@@ -151,8 +151,11 @@ For **both** environments, add this secret:
 ### Deployment Behavior
 
 - **Production**: Pushes to `main` deploy to your production Vercel environment
-- **Preview**: PRs and feature branches (e.g., `claude/**`) deploy to unique preview URLs
-- **PR Comments**: Each PR deployment automatically posts a comment with the preview URL
+- **Preview**: PRs and feature branches (e.g., `claude/**`) deploy to a **fixed shared preview environment** (`learn-claude-code-preview.vercel.app`)
+  - All PR branches are force-pushed to the `vercel-preview` branch before deployment
+  - This ensures a consistent callback URL for OAuth2 authentication
+  - ⚠️ **Note**: The preview environment is shared across all active PRs
+- **PR Comments**: Each PR deployment automatically posts a comment with the fixed preview URL
 
 ## Development Workflow
 
