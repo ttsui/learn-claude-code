@@ -138,7 +138,7 @@ Create two environments:
 - **`production`** - for main branch deployments
 - **`preview`** - for PR and feature branch deployments
 
-#### 2. Configure Environment Secrets
+#### 2. Configure Environment Secret
 
 For **both** environments, add this secret:
 
@@ -146,17 +146,7 @@ For **both** environments, add this secret:
   - Generate at: https://vercel.com/account/tokens
   - Create a token with appropriate scope for your project
 
-#### 3. Configure Environment Variables
-
-For **both** environments, add these variables:
-
-- **`VERCEL_ORG_ID`**: Your Vercel organization/team ID
-  - Found in: Vercel project settings → General → Project ID section
-  - Or run: `vercel link` locally and check `.vercel/project.json`
-
-- **`VERCEL_PROJECT_ID`**: Your Vercel project ID
-  - Found in: Vercel project settings → General
-  - Or run: `vercel link` locally and check `.vercel/project.json`
+**Note:** The Vercel organization and project IDs are stored in `.vercel/project.json` and automatically read by the Vercel CLI during deployment.
 
 ### Deployment Behavior
 
