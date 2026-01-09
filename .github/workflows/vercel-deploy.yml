@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - main
-      - 'claude/**'
+      - "claude/**"
 
 jobs:
   deploy-production:
@@ -26,7 +26,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -71,55 +71,3 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git push -f origin HEAD:vercel-preview
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
-      - name: Install Vercel CLI
-        run: pnpm install -g vercel@latest
-
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Deploy to Vercel
-        id: deploy
-        run: |
-          DEPLOYMENT_URL="https://learn-claude-code-preview.vercel.app"
-          vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} --alias learn-claude-code-preview
-          echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
-          echo "Deployed to preview: $DEPLOYMENT_URL"
-
-      - name: Comment PR with deployment URL
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const deploymentUrl = '${{ steps.deploy.outputs.url }}';
-            const comment = `## 🚀 Vercel Deployment
-
-            **Preview URL:** ${deploymentUrl}
-
-            ⚠️ **Note:** This is a shared preview environment used by all PRs to maintain a fixed callback URL for OAuth2 authentication.
-
-            **Environment:** Preview (Fixed Domain)
-            **Branch:** \`${{ github.head_ref }}\` → \`vercel-preview\`
-            **Commit:** ${{ github.sha }}
-
-            Deployed successfully to Vercel! ✅`;
-
-            github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: comment
-            });
