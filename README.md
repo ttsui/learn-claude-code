@@ -127,21 +127,36 @@ The `.github/workflows/vercel-deploy.yml` workflow automatically:
 - **Deploys preview environments** for all pull requests and feature branches
 - **Posts deployment URLs** as PR comments for easy access
 
-### Required GitHub Secrets
+### Required GitHub Configuration
 
-To enable Vercel deployments, add these secrets to your GitHub repository (Settings → Secrets and variables → Actions):
+To enable Vercel deployments, configure GitHub Actions Environments in your repository (Settings → Environments):
 
-1. **`VERCEL_TOKEN`**: Your Vercel authentication token
-   - Generate at: https://vercel.com/account/tokens
-   - Create a token with appropriate scope for your project
+#### 1. Create Environments
 
-2. **`VERCEL_ORG_ID`**: Your Vercel organization/team ID
-   - Found in: Vercel project settings → General → Project ID section
-   - Or run: `vercel link` locally and check `.vercel/project.json`
+Create two environments:
 
-3. **`VERCEL_PROJECT_ID`**: Your Vercel project ID
-   - Found in: Vercel project settings → General
-   - Or run: `vercel link` locally and check `.vercel/project.json`
+- **`production`** - for main branch deployments
+- **`preview`** - for PR and feature branch deployments
+
+#### 2. Configure Environment Secrets
+
+For **both** environments, add this secret:
+
+- **`VERCEL_TOKEN`**: Your Vercel authentication token
+  - Generate at: https://vercel.com/account/tokens
+  - Create a token with appropriate scope for your project
+
+#### 3. Configure Environment Variables
+
+For **both** environments, add these variables:
+
+- **`VERCEL_ORG_ID`**: Your Vercel organization/team ID
+  - Found in: Vercel project settings → General → Project ID section
+  - Or run: `vercel link` locally and check `.vercel/project.json`
+
+- **`VERCEL_PROJECT_ID`**: Your Vercel project ID
+  - Found in: Vercel project settings → General
+  - Or run: `vercel link` locally and check `.vercel/project.json`
 
 ### Deployment Behavior
 
