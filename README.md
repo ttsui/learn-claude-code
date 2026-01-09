@@ -115,6 +115,45 @@ pnpm test:e2e:parallel
 - `features/step_definitions/` - Step implementations using page objects
 - `features/support/` - Test configuration and hooks
 
+## Deployment
+
+This project is configured for automatic deployment to Vercel via GitHub Actions.
+
+### Vercel Deployment Setup
+
+The `.github/workflows/vercel-deploy.yml` workflow automatically:
+
+- **Deploys to production** when pushing to the `main` branch
+- **Deploys preview environments** for all pull requests and feature branches
+- **Posts deployment URLs** as PR comments for easy access
+
+### Required GitHub Configuration
+
+To enable Vercel deployments, configure GitHub Actions Environments in your repository (Settings → Environments):
+
+#### 1. Create Environments
+
+Create two environments:
+
+- **`production`** - for main branch deployments
+- **`preview`** - for PR and feature branch deployments
+
+#### 2. Configure Environment Secret
+
+For **both** environments, add this secret:
+
+- **`VERCEL_TOKEN`**: Your Vercel authentication token
+  - Generate at: https://vercel.com/account/tokens
+  - Create a token with appropriate scope for your project
+
+**Note:** The Vercel organization and project IDs are stored in `.vercel/project.json` and automatically read by the Vercel CLI during deployment.
+
+### Deployment Behavior
+
+- **Production**: Pushes to `main` deploy to your production Vercel environment
+- **Preview**: PRs and feature branches (e.g., `claude/**`) deploy to unique preview URLs
+- **PR Comments**: Each PR deployment automatically posts a comment with the preview URL
+
 ## Development Workflow
 
 This project follows atomic commit principles as defined in `CLAUDE.md`:
