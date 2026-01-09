@@ -56,13 +56,21 @@ jobs:
     timeout-minutes: 10
     environment: preview
     permissions:
-      contents: read
+      contents: write
       pull-requests: write
       deployments: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Force push to vercel-preview branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git push -f origin HEAD:vercel-preview
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -86,7 +94,8 @@ jobs:
       - name: Deploy to Vercel
         id: deploy
         run: |
-          DEPLOYMENT_URL=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          DEPLOYMENT_URL="https://learn-claude-code-preview.vercel.app"
+          vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} --alias learn-claude-code-preview
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
           echo "Deployed to preview: $DEPLOYMENT_URL"
 
@@ -100,8 +109,10 @@ jobs:
 
             **Preview URL:** ${deploymentUrl}
 
-            **Environment:** Preview
-            **Branch:** \`${{ github.head_ref }}\`
+            ⚠️ **Note:** This is a shared preview environment used by all PRs to maintain a fixed callback URL for OAuth2 authentication.
+
+            **Environment:** Preview (Fixed Domain)
+            **Branch:** \`${{ github.head_ref }}\` → \`vercel-preview\`
             **Commit:** ${{ github.sha }}
 
             Deployed successfully to Vercel! ✅`;
